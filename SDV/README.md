@@ -1,0 +1,1 @@
+In this folder we will use SDV which stands for Synthetic Data Vault, a Python library designed to be your one-stop shop for creating tabular synthetic data.

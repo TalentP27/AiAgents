@@ -1,0 +1,231 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -320,
+        140
+      ],
+      "id": "4e5b08eb-35e6-49ae-98a4-67b0c2df4877",
+      "name": "When chat message received",
+      "webhookId": "6ef15c75-765f-4d5d-8a2a-dc986cea02cb"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "chatgpt-4o-latest",
+          "mode": "list",
+          "cachedResultName": "chatgpt-4o-latest"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -20,
+        220
+      ],
+      "id": "b6f18d8b-c974-4a29-8dc8-72dece07dc5c",
+      "name": "OpenAI Chat Model",
+      "notesInFlow": false,
+      "credentials": {
+        "openAiApi": {
+          "id": "EzDktd5Rm0RDJ8yq",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are an AI assistant specialized in patent application analysis.  \nFor each patent submission, evaluate whether it is:\n\n- \"Novel\" — clearly original and not found in prior art, or  \n- \"Non-novel\" — already known, obvious, or disclosed in prior art.\n\nRespond only with one of these two labels followed by a very brief explanation (1-2 sentences).  \nDo not provide any additional information or recommendations.\n\nUse your existing knowledge without performing external searches.  \nIf you cannot determine novelty confidently, respond with \"Non-novel\" and a short reason.\n\nExample responses:  \nNovel: The invention introduces a new technology or method not previously documented.  \nNon-novel: Similar technologies or methods are already disclosed in prior patents.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4c40a9ab-68c8-4dc8-9f97-74feb5066ae9",
+      "name": "AI Agent",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        140,
+        280
+      ],
+      "id": "52b81350-3c35-446b-8ab7-7b7b835c679b",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "reviewTemplateID": {
+          "__rl": true,
+          "value": "9KvC1ooSWEZjCWur4yfs",
+          "mode": "list",
+          "cachedResultName": "Review Application Analysis (9KvC1ooSWEZjCWur4yfs)"
+        },
+        "fields": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "text": "={{ $('When chat message received').item.json.chatInput }}",
+            "text2": "={{ $json.output }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "type": "string",
+              "id": "text",
+              "displayName": "text (text)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true
+            },
+            {
+              "type": "string",
+              "id": "text2",
+              "displayName": "text2 (text)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "additionalFields": {}
+      },
+      "type": "@gotohuman/n8n-nodes-gotohuman.gotoHuman",
+      "typeVersion": 1,
+      "position": [
+        360,
+        0
+      ],
+      "id": "d7ba8278-4041-4531-b6a3-327a66755489",
+      "name": "gotoHuman",
+      "webhookId": "a14b08da-d1dc-45a4-b1cb-c1cc85888ed2",
+      "credentials": {
+        "gotoHumanApi": {
+          "id": "BErbEhw4lQLYw8Gd",
+          "name": "gotoHuman account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a1d684d7-d2ea-4f3b-819a-b6b9b0fc5def",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        660,
+        160
+      ],
+      "id": "76835f41-99b0-4c63-a26c-9b073c0e8127",
+      "name": "If"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "gotoHuman",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gotoHuman": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "416bde8f-99b8-4f25-a46e-644ed80ebbb9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "52e6f2fdf2fc4a13b6849dabf62353068fa00e2a970ce007cb40a66240c668d9"
+  },
+  "id": "B0Ue5Rv3HBxL8uR0",
+  "tags": []
+}

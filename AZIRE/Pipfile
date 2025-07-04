@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+agno = "*"
+openai = "*"
+pypdf = "*"
+arize-phoenix = {extras = ["evals"], version = "*"}
+arize = "*"
+"arize.otel" = "*"
+"openinference.instrumentation.openai" = "*"
+"openinference.instrumentation.agno" = "*"
+duckduckgo-search = "*"
+newspaper4k = "*"
+lxml-html-clean = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"
