@@ -1,0 +1,236 @@
+{
+  "name": "Meeting Summarizer",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "616b1985-88fd-423f-bb41-e57be3c57011",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "https://drive.google.com/file/d/1aWtev_dJiGikQgPXsGOXN48JM2ghnEOf/view?usp=sharing",
+          "mode": "url"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        220,
+        0
+      ],
+      "id": "66c795a2-ae9b-452f-be1c-8d6eb12d1889",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Td4hSyVPhkMXPJJw",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        440,
+        0
+      ],
+      "id": "4d339cb7-197a-490e-b75e-349fc74a2de7",
+      "name": "Transcribe a recording",
+      "credentials": {
+        "openAiApi": {
+          "id": "SSu4Vg9z8MfaJXzx",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "options": {
+          "systemMessage": "=You are a professional assistant tasked with summarizing business meetings.\n\nGiven the following transcript of a meeting (as user prompt), do the following:\n1. Provide a concise **summary** of the meeting (3-5 bullet points).\n2. Clearly define the **main topic or purpose** of the meeting.\n3. List the **key points discussed**, including important ideas, suggestions, or debates.\n4. Identify any **decisions made** or conclusions reached.\n5. Extract any **action items or tasks**, mentioning:\n   - Who is responsible\n   - What the task is\n   - Deadline (if mentioned)\n6. Mention **any follow-up steps** or next meetings if discussed.\n\nKeep the output clean, professional, and organized. Format it as plain text like this:\n\n---\n\n**Meeting Summary**  \n- [summary point 1]  \n- [summary point 2]  \n...\n\n**Main Topic**  \n[main subject]\n\n**Key Discussion Points**  \n- [point 1]  \n- [point 2]  \n...\n\n**Decisions Made**  \n- [decision 1]  \n- [decision 2]  \n...\n\n**Action Items**  \n- [Person]: [Task] — Due: [date if mentioned]  \n...\n\n**Follow-ups / Next Steps**  \n- [follow-up step or note]\n\n---"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        680,
+        -160
+      ],
+      "id": "d262feac-8bc5-48fc-b0f2-79df6a923ebe",
+      "name": "AI Agent",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        680,
+        40
+      ],
+      "id": "0dbe1e77-af9d-426d-be6f-8f29c2866c94",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "SSu4Vg9z8MfaJXzx",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "https://docs.google.com/document/d/14n-bq_uRNsk6cgq9xInmlDb6ZpSF4ZqfDICBCJLKM3A/edit?usp=sharing",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $json.output }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1060,
+        140
+      ],
+      "id": "81ba5d2b-187d-4f6c-a278-99f673c6d2d6",
+      "name": "Update a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "n4Qrv34ozXRYuOPa",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "marouanechaibat@outlook.com",
+        "subject": "Meeting Summary You Missed!",
+        "emailType": "text",
+        "message": "=Find meeting summary at https://docs.google.com/document/d/{{ $json.documentId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1360,
+        -20
+      ],
+      "id": "24fc7265-bc29-4c22-8a01-bb917e354649",
+      "name": "Send a message",
+      "webhookId": "5a907dd4-02e5-47e7-8bdc-49c8fe7b73c9",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "AXWTuFszqveShNHW",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Update a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a document": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "07664f81-b6ba-4f6a-930e-c304be37477b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "eb6daab84a97cd340624c68080ce67371f82974d020d3b177272e6f5acd8ea7e"
+  },
+  "id": "pYb7mGKEmrrR11qv",
+  "tags": []
+}
