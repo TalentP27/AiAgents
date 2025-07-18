@@ -1,0 +1,175 @@
+{
+  "clients": [
+    {
+      "name": "Manuel Dupant",
+      "occupation": "Software Engineer",
+      "age": 34,
+      "income": 120000,
+      "expenses": 45000,
+      "debt": 15000,
+      "credit_score": 780,
+      "savings": 75000,
+      "investments": 50000,
+      "financial_goals": ["Retire by 55", "Buy a house in 5 years"],
+      "risk_tolerance": "Moderate",
+      "tax_status": "Married filing jointly",
+      "employment_status": "Full-time",
+      "dependents": 2,
+      "insurance_coverage": ["Health", "Life", "Disability"],
+      "retirement_plans": ["401(k)", "Roth IRA"],
+      "time_horizon": 20,
+      "current_financial_products": ["Brokerage account", "High-yield savings"],
+      "marital_status": "Married",
+      "estate_plans": "Will in place",
+      "past_financial_decisions": ["Refinanced mortgage", "Maxed 401(k) contributions"],
+      "upcoming_expenses": ["Child's college tuition"],
+      "meeting_notes": [
+        {
+          "date": "2025-02-02",
+          "summary": "Manuel discussed his investment strategy with his Relationship Manager, Anshu. He expressed interest in AI and Big Data sectors and wanted to ensure his investments were not too conservative. Manuel also wanted to increase his exposure to USD as most of his investments were in CHF due to his company."
+          
+        },
+        {
+          "date": "2025-03-31",
+          "summary": "Manuel showed interest in Oklo Inc. stocks and asked Anshu to analyze their potential fit for his portfolio. Anshu agreed to research and provide an update in their upcoming meeting."
+        }
+      ]
+    },
+    {
+      "name": "Sophia Martinez",
+      "occupation": "Marketing Director",
+      "age": 42,
+      "income": 95000,
+      "expenses": 38000,
+      "debt": 22000,
+      "credit_score": 760,
+      "savings": 60000,
+      "investments": 85000,
+      "financial_goals": ["Travel more", "Early retirement"],
+      "risk_tolerance": "Aggressive",
+      "tax_status": "Single",
+      "employment_status": "Full-time",
+      "dependents": 0,
+      "insurance_coverage": ["Health", "Auto"],
+      "retirement_plans": ["IRA", "Brokerage"],
+      "time_horizon": 25,
+      "current_financial_products": ["ETF portfolio", "CDs"],
+      "marital_status": "Single",
+      "estate_plans": "None",
+      "past_financial_decisions": ["Paid off student loans"],
+      "upcoming_expenses": ["Car purchase"],
+      "meeting_notes": [
+        {
+          "date": "2025-01-15",
+          "summary": "Sophia wants to prioritize travel funding. Discussed setting up a dedicated high-yield savings account for travel goals."
+        },
+        {
+          "date": "2025-04-10",
+          "summary": "Interested in thematic ESG ETFs for her brokerage account. Asked for recommendations aligning with her values."
+        }
+      ]
+    },
+    {
+      "name": "Raj Patel",
+      "occupation": "Physician",
+      "age": 50,
+      "income": 250000,
+      "expenses": 90000,
+      "debt": 100000,
+      "credit_score": 800,
+      "savings": 200000,
+      "investments": 300000,
+      "financial_goals": ["Pay off mortgage", "Fund children's education"],
+      "risk_tolerance": "Conservative",
+      "tax_status": "Married filing jointly",
+      "employment_status": "Full-time",
+      "dependents": 3,
+      "insurance_coverage": ["Health", "Life", "Umbrella"],
+      "retirement_plans": ["401(k)", "529 Plan"],
+      "time_horizon": 15,
+      "current_financial_products": ["Real estate investments"],
+      "marital_status": "Married",
+      "estate_plans": "Trust set up",
+      "past_financial_decisions": ["Invested in rental property"],
+      "upcoming_expenses": ["Home renovation"],
+      "meeting_notes": [
+        {
+          "date": "2025-02-20",
+          "summary": "Raj wants to accelerate mortgage payoff. Discussed refinancing options and lump-sum payment strategies."
+        },
+        {
+          "date": "2025-05-05",
+          "summary": "Concerned about market volatility affecting his 529 plans. Explored fixed-income options for education savings."
+        }
+      ]
+    },
+    {
+      "name": "Elena Rodriguez",
+      "occupation": "Freelance Designer",
+      "age": 29,
+      "income": 65000,
+      "expenses": 35000,
+      "debt": 12000,
+      "credit_score": 710,
+      "savings": 20000,
+      "investments": 15000,
+      "financial_goals": ["Start a business", "Buy a condo"],
+      "risk_tolerance": "Moderate",
+      "tax_status": "Self-employed",
+      "employment_status": "Freelance",
+      "dependents": 0,
+      "insurance_coverage": ["Health"],
+      "retirement_plans": ["Roth IRA"],
+      "time_horizon": 30,
+      "current_financial_products": ["Robo-advisor account"],
+      "marital_status": "Single",
+      "estate_plans": "None",
+      "past_financial_decisions": ["Paid off credit cards"],
+      "upcoming_expenses": ["Professional certification"],
+      "meeting_notes": [
+        {
+          "date": "2025-03-12",
+          "summary": "Elena seeks advice on saving for a condo down payment. Suggested a timeline and aggressive savings plan."
+        },
+        {
+          "date": "2025-06-18",
+          "summary": "Wants to start a side business. Discussed SEP-IRA options for self-employed retirement savings."
+        }
+      ]
+    },
+    {
+      "name": "James Wilson",
+      "occupation": "Retired Teacher",
+      "age": 68,
+      "income": 50000,
+      "expenses": 40000,
+      "debt": 0,
+      "credit_score": 820,
+      "savings": 300000,
+      "investments": 250000,
+      "financial_goals": ["Travel", "Leave inheritance"],
+      "risk_tolerance": "Low",
+      "tax_status": "Married filing jointly",
+      "employment_status": "Retired",
+      "dependents": 0,
+      "insurance_coverage": ["Medicare", "Long-term care"],
+      "retirement_plans": ["Pension", "IRA"],
+      "time_horizon": 10,
+      "current_financial_products": ["Annuities", "Bonds"],
+      "marital_status": "Married",
+      "estate_plans": "Will and trust",
+      "past_financial_decisions": ["Downsized home"],
+      "upcoming_expenses": ["Grandchild's education fund"],
+      "meeting_notes": [
+        {
+          "date": "2025-01-30",
+          "summary": "James wants to ensure his annuities cover travel expenses. Reviewed payout schedules and liquidity options."
+        },
+        {
+          "date": "2025-04-22",
+          "summary": "Interested in setting up an education trust for his grandchild. Discussed 529 vs. UTMA accounts."
+        }
+      ]
+    }
+  ]
+}
