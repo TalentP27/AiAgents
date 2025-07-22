@@ -43,12 +43,12 @@ def ocr_pdf(pdf_path):
         f.write("\n".join([page.markdown for page in ocr_response.pages]))
 
 ## Run it only once ##
-
-# ocr_pdf("Document/daily_rates_2024.pdf")
+# ocr_pdf("Document/ups_rate_guide_2025.pdf")
+# quit()
 
 ## Setup Knowledge Base ###
 knowledge_base = MarkdownKnowledgeBase(
-    path="Document/ups_document.md",
+    path="Markdown/",
     vector_db=PgVector(
         table_name="markdown_documents",
         db_url="postgresql+psycopg://ai:ai@localhost:5532/ai",
@@ -59,60 +59,79 @@ freight_agent = Agent(
     name="Freight Agent",
     model=OpenAIChat(id='gpt-4o-mini'),
     instructions=dedent("""
-    You are a Freight Cost Estimator Agent that helps small import/export businesses estimate shipping costs and timelines.
+    You are a Freight Cost Estimator Agent that helps small import/export businesses estimate and compare shipping costs and timelines across major carriers.
+
 
     You have access to:
-    - A knowledge base built from the 2024 UPS Daily Rates PDF, which includes pricing by weight and zone, service types, and surcharge tables.
-    - A tool called GoogleSearchTools() that you can use to fetch live or missing data, such as typical delays or non-UPS cost estimates.
+    - A knowledge base built from 2024 rate guides and surcharge tables for UPS, FedEx, and DHL.
+    - A tool called GoogleSearchTools() to fetch live or missing data, such as average delays, service disruptions, or cost gaps not found in the documents.
 
-    When a user gives you (origin, destination, cargo details), follow this process:
+    When a user gives you (origin, destination, cargo details) as 'User Question', along with the product details and dimensions as 'Product Specifications', follow this process:
 
-    1. Identify the ZIP codes or cities from the origin and destination to determine the shipping zone.
-    2. Use the knowledge base tables to:
-    - Select the correct UPS service type (e.g., Ground, 2nd Day Air, etc.)
-    - Find the base rate based on weight and zone.
-    - Add any relevant surcharges (e.g., fuel, residential delivery, oversized package).
-    3. If the user provides vague cargo info (e.g., "2 pallets"), estimate weight and dimensions using typical values.
-    4. Estimate delivery time based on the selected service and shipping lane using the UPS rate guide or GoogleSearchTools().
-    5. Estimate potential delays:
-    - Use the knowledge base or GoogleSearchTools() to find current or historical issues (weather, customs, backlogs).
-    6. Present the output as a clear table with:
-    - Estimated price (including surcharges)
-    - Estimated delivery time
-    - Delay risk (Low/Medium/High)
-    - Sources used
+    1. Identify the ZIP codes or cities from the origin and destination to determine the shipping lane and applicable zone.
+    2. For **each carrier (UPS, FedEx, DHL)**:
+    a. Select the most appropriate service type (e.g., Ground, Express, Economy) based on weight, distance, and general business priority.
+    b. Look up the base rate using the rate table.
+    c. Add relevant surcharges (e.g., fuel, residential delivery, oversized packages).
+    d. Estimate delivery time using the knowledge base or GoogleSearchTools().
+    e. Estimate delay risk using historical info or GoogleSearchTools().
+    3. Compare all three carriers based on:
+    - Total cost (including surcharges)
+    - Delivery time
+    - Delay risk
+    4. Recommend the **best option** based on a balance of cost, speed, and reliability.
+    5. Present the output as a clean comparison table followed by a recommendation summary:
+    - Justify your choice
+    - Note any assumptions (e.g., guessed weight or pallet size)
+    - List the sources used
 
-    Always include a brief explanation with any assumptions made (e.g., default freight class, guessed weight, etc.).
+    All that should be based on the products dimensions and specifications!
+
+    Always be transparent about the decision logic and flag if the choice depends on assumptions or missing data.
     """),
     expected_output=dedent("""
-    This is an example of the expected output:
+    📦 Freight Cost Comparison (NOT AS TABLE)
 
-    📦 **Freight Cost Estimate**
+    UPS
+    - Service Type: Ground Freight (LTL)
+    - Total Cost: $490.00
+    - Delivery Time: 5 business days
+    - Delay Risk: Medium
+    - Notes: Standard ground shipment with liftgate service surcharge
 
-    | Detail                 | Value                             |
-    |------------------------|-----------------------------------|
-    | Origin                 | Miami, FL (ZIP 33101)             |
-    | Destination            | Houston, TX (ZIP 77001)           |
-    | Cargo Description      | 2 pallets, approx. 500 lbs total  |
-    | Service Type           | UPS Ground Freight                |
-    | Estimated Base Rate    | $230.00                           |
-    | Fuel Surcharge         | $15.00                            |
-    | Residential Surcharge  | $0.00                             |
-    | **Total Estimated Cost** | **$245.00**                      |
-    | Estimated Delivery Time| 3 business days                   |
-    | Delay Risk             | Medium (possible weather events)  |
+    FedEx
+    - Service Type: FedEx Freight Priority
+    - Total Cost: $540.00
+    - Delivery Time: 4 business days
+    - Delay Risk: Low
+    - Notes: Includes residential delivery and liftgate
 
-    **Explanation**
-    - "Give explanation of the service type chosen, estimated base rate, fuel surcharge, residential surcharge, and total estimated cost."
+    DHL
+    - Service Type: DHL Industrial Express
+    - Total Cost: $695.00
+    - Delivery Time: 3 business days
+    - Delay Risk: High
+    - Notes: Fastest but least cost-efficient for heavy freight
 
-    📑 **Sources**
-    - UPS Daily Rates 2024 (internal knowledge base)
-    - [Google Search] Current weather advisories in Gulf region
+    ✅ Recommended Option: FedEx Freight Priority
 
-    📝 **Assumptions**
-    - Each pallet estimated at 250 lbs
-    - Shipment classified as LTL
-    - Commercial pickup and delivery locations
+    📌 Reason for Recommendation Based on Product:
+    The item is a **heavy-duty industrial air compressor (Atlas Copco GA 30+)**, weighing 850 kg and requiring careful handling and possibly liftgate delivery. FedEx offers:
+    - **Lower delay risk**, crucial for industrial equipment that may be needed for uninterrupted production
+    - **Reliable LTL infrastructure** for heavy and palletized freight
+    - **Faster delivery** than UPS, and more affordable than DHL, making it the most balanced option
+
+    UPS is slightly cheaper, but slower and more likely to involve manual scheduling delays. DHL is fast but expensive and best suited for high-value, time-critical electronics or international shipments.
+
+    📝 Assumptions
+    - Freight is palletized and forklift-accessible
+    - Commercial-to-commercial delivery
+    - Liftgate required at destination
+    - Shipment classified as non-hazardous industrial equipment
+
+    📑 Sources
+    - UPS, FedEx, DHL 2024 Freight Tariffs (internal KB)
+    - [Google Search] "Freight performance for heavy industrial equipment"
     """),
     tools=[ReasoningTools(add_instructions=True), GoogleSearchTools()],
     knowledge=knowledge_base,
@@ -120,4 +139,16 @@ freight_agent = Agent(
 )
 freight_agent.knowledge.load(recreate=False)
 
-freight_agent.print_response("Shipping 3 crates of machine parts from Chicago, IL (60601) to Atlanta, GA (30301). Each crate is about 200 lbs. Can you estimate the cost and delivery time?")
+# freight_agent.print_response("Shipping 3 crates of machine parts from Chicago, IL (60601) to Atlanta, GA (30301). Each crate is about 200 lbs. Can you estimate the cost and delivery time?")
+
+# I need to ship this product from Denver, CO (80202) to Phoenix, AZ (85001). Can you estimate the cost, delivery time, and potential delays?
+
+def full_response(message):
+    print('--------Freight Agent Triggered--------')
+    response = freight_agent.run(message)
+    print('response--------', response.content)
+    return response.content
+
+
+## Add DHL, Fedex for the agent to compare in term of cost and delivery time, ...
+## Add also dimension along with weight
