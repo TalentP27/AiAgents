@@ -145,5 +145,6 @@ if __name__ == "__main__":
             with open("Documents/morocco-import-law.md", "w") as f:
                 f.write(translation_response.content)
             specialist_agent.retriever = [export_law_document, import_law_document]
-            specialist_response = specialist_agent.run(product_details)
-            st.markdown(specialist_response.content)
+            # specialist_response = specialist_agent.run(product_details)
+            specialist_agent.print_response(product_details)
+            # st.markdown(specialist_response.content)

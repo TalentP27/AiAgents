@@ -241,7 +241,7 @@ This paragraph has force of law.
 A supply of goods sent to a destination outside the UK is liable to the zero rate as a direct export where:
 
 - the goods are exported from the UK within the specified time limits (read paragraph 3.5)
-- you get and hold official or commercial evidence of export as appropriate (read paragraph 6.2 and 6.3) within the specified time limits
+- you get and hold official or commercial evidence of export as appropriate (read paragraph 6.2 and 6.3 ) within the specified time limits
 - you keep supplementary evidence of the export transaction (read paragraph 6.4)
 
 
@@ -259,7 +259,7 @@ If your export transactions do not fit specifically into any of these categories
 A supply of goods to an overseas customer (read paragraph 2.4) sent to a destination outside the UK is liable to the zero rate as an indirect export where the overseas customer:
 
 - exports the goods from the UK within the specified time limits (read paragraph 3.5)
-- obtains and gives you valid official or commercial evidence of export as appropriate (read paragraph 6.2 and 6.3) within the specified time limits
+- obtains and gives you valid official or commercial evidence of export as appropriate (read paragraph 6.2 and 6.3 ) within the specified time limits
 
 You must:
 
@@ -780,11 +780,11 @@ Goods being exported must be fully and clearly described with the value shown on
 
 Due to the complexities of the movement of consignments within the courier or fast parcel environment, there is often more than one company involved in the handling and ultimate export of the goods. You as the UK supplier may not be certain as to which courier or fast parcel company has made the export declaration to customs. Consequently, it may be difficult to get official proof of export, leaving you to rely on the commercial evidence of export.
 
-If the operator makes a bulk declaration when exporting the goods, it may not be possible to print a travelling copy 3 for the individual consignments of the SAD referred to in paragraph 7.3.
+If the operator makes a bulk declaration when exporting the goods, it may not be possible to print a travelling copy 3 for the individual consignments of the SAD referred to in paragraph 7.3 .
 
 In these circumstances, you must use commercial evidence of export, typically fully completed transport documents.
 
-But, where you, as the supplier, are certain that the export declaration has been made by a specific courier or fast parcel company you may rely on either official and, or commercial evidence as detailed in paragraphs 6.2 and 6.3.
+But, where you, as the supplier, are certain that the export declaration has been made by a specific courier or fast parcel company you may rely on either official and, or commercial evidence as detailed in paragraphs 6.2 and 6.3 .
 (d) Overseas customer arranging the export by courier
 If your overseas customer arranges for the goods to be exported by courier, you should find out what proof of export they will be providing to allow you to zero rate the supply. More information on what you should do is in paragraph 6.6.
 
@@ -1164,4 +1164,4 @@ Last updated 31 October 2023 + show all updates
 # 06 
 
 All content is available under the Open Government Licence v3.0, except where otherwise stated
-(c) Crown copyright
+© Crown copyright
