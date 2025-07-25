@@ -1,3 +1,5 @@
+import sys
+print("PYTHONPATH:", sys.path)
 import os
 from exa_py import Exa
 from textwrap import dedent
@@ -117,8 +119,9 @@ class ProcurementAgent(Workflow):
         3. After extracting the data, write and execute a Python script that creates a file named `data.csv`
             - Use the standard `csv` module
             - After each product, leave a blank line
-            - Make the coloms in this order: Product Name, Vendor Name, Product Title, Price, Currency, Bulk Discounts or Deals, Vendor Website, Short Product Description, Minimum Order Quantity, Shipping Time
+            - Make the columns in this order: Product Name, Vendor Name, Product Title, Price, Currency, Bulk Discounts or Deals, Vendor Website, Short Product Description, Minimum Order Quantity, Shipping Time
             - The script should write a header row followed by one row per vendor
+            - IMPORTANT: When opening the file, always use encoding='utf-8' in open(), e.g. open('data.csv', 'w', newline='', encoding='utf-8')
             - Then use the PythonTools tool to run the script and save the data
             - Based on the data given, create rows for each data point
 
@@ -191,3 +194,82 @@ if __name__ == '__main__':
         workflow = ProcurementAgent()
         response: Iterator[RunResponse] = workflow.run(product_list=product_list, location=location)
         pprint_run_response(response, markdown=True)
+
+# --- FastAPI Web Server ---
+from fastapi import FastAPI, UploadFile, Form
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse, FileResponse
+import uvicorn
+import tempfile
+import os
+import re
+import ast
+import csv
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.post("/procure")
+async def procure(product_list: str = Form(...), location: str = Form(...)):
+    workflow = ProcurementAgent()
+    response: Iterator[RunResponse] = workflow.run(product_list=product_list, location=location)
+    # Collect the streamed markdown output
+    markdown_output = ""
+    for chunk in response:
+        if hasattr(chunk, 'content') and chunk.content:
+            markdown_output += chunk.content
+        elif isinstance(chunk, str):
+            markdown_output += chunk
+
+    # --- Post-processing to fix the CSV file ---
+    try:
+        # Find the python code block for the data list in the agent's markdown response
+        match = re.search(r"data\s*=\s*(\[.*?\])", markdown_output, re.DOTALL)
+        if match:
+            data_str = match.group(1)
+            # Safely evaluate the string to a Python list of dictionaries
+            data_list = ast.literal_eval(data_str)
+            
+            # Define headers as specified in the agent's prompt for consistent order
+            fieldnames = [
+                "Product Name", "Vendor Name", "Product Title", "Price", "Currency", 
+                "Bulk Discounts or Deals", "Vendor Website", "Short Product Description", 
+                "Minimum Order Quantity", "Shipping Time"
+            ]
+            
+            # Rewrite the CSV file correctly
+            with open('data.csv', 'w', newline='', encoding='utf-8') as file:
+                writer = csv.DictWriter(file, fieldnames=fieldnames, extrasaction='ignore')
+                writer.writeheader()
+                for row in data_list:
+                    # Write row if it's a dictionary (handles both data and empty dicts for newlines)
+                    if isinstance(row, dict):
+                        writer.writerow(row)
+                        
+    except (ValueError, SyntaxError) as e:
+        # If parsing fails, the original messy CSV will be served.
+        print(f"Warning: Could not parse and rewrite CSV from agent output. {e}")
+    # --- End of post-processing ---
+
+    # Check if data.csv exists
+    csv_exists = os.path.exists("data.csv")
+    return JSONResponse({
+        "markdown": markdown_output,
+        "csv_available": csv_exists
+    })
+
+@app.get("/csv")
+def get_csv():
+    csv_path = "data.csv"
+    if os.path.exists(csv_path):
+        return FileResponse(csv_path, media_type="text/csv", filename="data.csv")
+    return JSONResponse({"error": "CSV not found"}, status_code=404)
+
+# To run: uvicorn procurement_agent:app --reload
